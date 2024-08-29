@@ -1,19 +1,39 @@
 import { useEffect ,useState} from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Blocks } from "react-loader-spinner";
-import { MdOutlinePlaylistAdd } from "react-icons/md";
+import { MdOutlinePlaylistAdd, MdCheckCircle } from "react-icons/md";
 import NavBar from "../pages/NavBar";
+import { IoReturnUpBack } from "react-icons/io5";
 
-const BookDetail = () => {
+export default function BookDetail() {
+
   const { id } = useParams();
+  const navigate =useNavigate();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error] = useState(null);
+  const [isInList, setIsInList] = useState(false);
 
+  const AddToList = () => {
+    const newBook = {
+      title: book.volumeInfo.title,
+      img: book.volumeInfo.imageLinks?.thumbnail,
+      publisher: book.volumeInfo.publisher,
+      id: book.id,
+    };
+    const savedBooks = JSON.parse(localStorage.getItem("savedBooks")) || [];
+    const isBookInList = savedBooks.some(book => book.id === newBook.id);
 
+    if (isBookInList) {
+      alert("Questo libro è già nella lista!");
+      return;
+    }
+    const updatedBooks = [...savedBooks, newBook];
+    localStorage.setItem("savedBooks", JSON.stringify(updatedBooks));
+    setIsInList(true);
+  };
   useEffect(() => {
     const fetchBookDetail= async ()=> {
-
       setLoading(true);
           try{
             const response= await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
@@ -22,13 +42,18 @@ const BookDetail = () => {
             }
             const data = await response.json();
             setBook(data);
+            const savedBooks = JSON.parse(localStorage.getItem("savedBooks")) || [];
+            const isBookInList = savedBooks.some(book => book.id === id);
+            setIsInList(isBookInList);
           }catch(error){
               console.log("errore nel caricamento dei dettagli del libro,Riprova",error);
           }
           setLoading(false);
+          
     }
     fetchBookDetail();
   },[id]);
+
   if (loading) return 
                       <Blocks
                       height="80"
@@ -57,6 +82,9 @@ const BookDetail = () => {
           }
       </div>
       <div className="flex flex-col items-center justify-center gap-6 p-4 max-w-3xl mx-auto">
+        <div onClick={() => navigate(-1)} className="flex flex-row justify-center gap-3 items-center text-blue-500 hover:text-blue-700 cursor-pointer">
+        <IoReturnUpBack/><span>Go Back</span>
+        </div>  
       <div className="flex items-center justify-center gap-4">
         <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center font-semibold leading-5">
           {book.volumeInfo.title.length > 50
@@ -64,9 +92,11 @@ const BookDetail = () => {
             : book.volumeInfo.title}
         </h3>
         <button
-          className="text-blue-500 hover:text-blue-700 transition-colors duration-300 text-4xl"
-          title="Add to List">
-          <MdOutlinePlaylistAdd/> 
+              onClick={AddToList}
+              className={`transition-colors duration-300 text-4xl ${isInList ? 'text-green-500 hover:text-green-700' : 'text-blue-500 hover:text-blue-700'}`}
+              title={isInList ? "Already in List" : "Add to List"}
+            >
+              {isInList ? <MdCheckCircle /> : <MdOutlinePlaylistAdd />}
         </button>
       </div>
       <p className="text-lg text-center font-medium text-gray-300">
@@ -104,5 +134,3 @@ const BookDetail = () => {
     </div>
   )
 }
-
-export default BookDetail;

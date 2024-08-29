@@ -8,7 +8,9 @@ import Home from './pages/Home';
 import BookSearch from './components/BookSearch';
 import NotFoundPage from './pages/NotFoundPage';
 import BookDetail from './components/BookDetail';
+import SavedBooks from './components/SavedBooks';
 // import About from './pages/About';
+
 
 const router = createBrowserRouter([
   {
@@ -21,8 +23,12 @@ const router = createBrowserRouter([
     element: <BookSearch/>
   },
   {
+    path: "/SavedBooks",
+    element: <SavedBooks/>,
+  },
+  {
     path: "/books/:id",
-    element: <BookDetail/>
+    element: <BookDetail/>,
   },
 ])
 

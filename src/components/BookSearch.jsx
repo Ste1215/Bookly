@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import { Blocks } from "react-loader-spinner";
 import NavBar from './../pages/NavBar';
 
-const BookSearch = () => {
+export default function BookSearch() {
     const [query, setQuery] = useState("");
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -33,14 +33,14 @@ const BookSearch = () => {
       };
       const booksWithImages = books.filter(book => book.volumeInfo.imageLinks?.thumbnail);
   return (
-    <div className="bg-gradient-to-r from-slate-900 to-slate-700 flex flex-col justify-center text-white font-[400]">
-      <NavBar/>
+    <div className="bg-gradient-to-r from-slate-900 to-slate-700 flex flex-col justify-center text-white font-[400] h-screen min-h-[100vh]">
        <div className="container text-white h-full">
-       <div className="text-center mb-5">
+       <NavBar/>
+       <div className="text-center flex gap-5 flex-col items-center mb-8">
           <h1 className="text-5xl font-bold mt-10 mb-3">Find the perfect book for you</h1>
           <p className="text-lg text-gray-300">Cerca tra milioni di titoli disponibili e trova il libro giusto per te!</p>
         </div>
-            <form onSubmit={handleSubmit} className="flex justify-center mb-10">
+          <form onSubmit={handleSubmit} className="flex justify-center mb-10">
                 <input
                 type="text"
                 value={query}
@@ -68,7 +68,7 @@ const BookSearch = () => {
                         visible={true}/>
             }
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-20 p-5 mb-20 justify-center items-center ">
+            <div className="bg-gradient-to-r from-slate-900 to-slate-700 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-20 p-5 mb-20 justify-center items-center ">
                 {booksWithImages?.map((book) => (
                 <Link to={`/books/${book.id}`} key={book.id} className="bg-transparent flex flex-col items-center w-full max-w-[300px] mx-auto rounded-xl shadow-md">
                     {
@@ -89,9 +89,7 @@ const BookSearch = () => {
                 ))}
             </div>
             </div>
-    </div>
-       
+    </div> 
   )
 }
 
-export default BookSearch

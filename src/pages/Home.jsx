@@ -2,7 +2,7 @@
 import NavBar from './NavBar';
 import { Link } from 'react-router-dom';
 import About from './About';
-const Home = () => {
+export default function Home () {
   return (
     <div className="bg-gradient-to-r from-slate-900 to-slate-700">
       <NavBar></NavBar>
@@ -21,5 +21,3 @@ const Home = () => {
     </div>
   )
 }
-
-export default Home
